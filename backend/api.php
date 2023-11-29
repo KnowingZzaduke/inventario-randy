@@ -62,6 +62,7 @@ if (isset($_POST["action"]) || isset($_GET["action"])) {
                 $mysqli->close();
             }
             break;
+            
     }
     exit;
 }

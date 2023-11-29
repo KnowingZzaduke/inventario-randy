@@ -6,8 +6,13 @@ const request = {
     formData.append("password", data.password);
     try {
       const response = await axios.post(
-        "/api.php?action=login",
-        formData
+        "/backend/api.php?action=login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response) {
         return response;
@@ -39,8 +44,13 @@ const request = {
     formData.append("valorcompra", data.valorCompra);
     try {
       const response = await axios.post(
-        "/api.php?action=savedata",
-        formData
+        "/backend/api.php?action=savedata",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       console.log(response);
       if (response) {
@@ -52,7 +62,7 @@ const request = {
   },
   loaddata: async function () {
     try {
-      const response = await axios.get("/api.php?action=loaddata");
+      const response = await axios.get("/backend/api.php?action=loaddata");
       if (response) {
         return response;
       }
