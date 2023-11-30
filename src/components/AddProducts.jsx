@@ -59,10 +59,6 @@ function AddProducts() {
       }
     }
   }
-
-  useEffect(() => {
-    console.log(sendParams);
-  }, [sendParams]);
   return (
     <div
       className="flex flex-col align-middle justify-center"

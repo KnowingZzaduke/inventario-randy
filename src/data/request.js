@@ -44,28 +44,23 @@ const request = {
     formData.append("valorcompra", data.valorCompra);
     try {
       const response = await axios.post(
-        "/backend/api.php?action=savedata",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        "http://localhost:3001/products/savedata",
+        formData
       );
-      console.log(response);
       if (response) {
-        return response;
+        return response.data;
       }
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
   },
   loaddata: async function () {
     try {
-      const response = await axios.get("/backend/api.php?action=loaddata");
-      if (response) {
-        return response;
-      }
+      const response = await axios.get(
+        "http://localhost:3001/products/loaddata"
+      );
+      return response;
     } catch (error) {
       console.error(error);
     }
