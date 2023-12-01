@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const { Product, User } = require("../models/product");
-const multer = require("multer"); // Importa multer
+const multer = require("multer");
 const upload = multer();
 
 router.post("/login", async (req, res) => {
@@ -19,7 +19,10 @@ router.post("/login", async (req, res) => {
     }
 
     // Comparar la contraseña proporcionada con la almacenada en la base de datos
-    const passwordMatch = await bcrypt.compare(contrasena, foundUser.contrasena);
+    const passwordMatch = await bcrypt.compare(
+      contrasena,
+      foundUser.contrasena
+    );
 
     if (!passwordMatch) {
       return res
