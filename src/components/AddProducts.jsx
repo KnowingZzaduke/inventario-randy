@@ -10,7 +10,7 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import request from "../data/request";
 import { useEffect, useState } from "react";
 function AddProducts() {
@@ -25,7 +25,7 @@ function AddProducts() {
     fechaExpiracion: "",
     valorCompra: "",
   });
-
+  const [showSendData, setShowSendData] = useState(false);
   const [productsValues, setProductsValues] = useState([]);
   const [categorieValues, setCategorieValues] = useState([]);
   const [showProductsSelect, setShowProductosSelect] = useState(false);
@@ -52,11 +52,19 @@ function AddProducts() {
     for (let key in sendParams) {
       if (sendParams[key] === null) {
         alert(`El valor ${key} está vacío`);
-      } else {
-        const response = await request.savedata(sendParams);
-        if (response) {
-        }
+        return;
       }
+    }
+    try {
+      const response = await request.savedata(sendParams);
+      if (response.salida === "exito") {
+        setShowSendData(true);
+        setTimeout(() => {
+          setShowSendData(false);
+        }, 3000);
+      }
+    } catch (error) {
+      alert(error);
     }
   }
   return (
@@ -65,7 +73,7 @@ function AddProducts() {
       style={{ minHeight: "100vh" }}
     >
       <div className="text-center flex flex-col items-center py-4">
-        <h1 className="py-2" style={{ fontSize: "2rem" }}>
+        <h1 className="py-2" style={{ fontSize: "2rem", color: "blue" }}>
           Formulario de agregar facturas
         </h1>
         <form
@@ -109,7 +117,10 @@ function AddProducts() {
                   label="Selecciona un producto"
                   selectedKeys={sendParams.nombreProducto}
                   onSelectionChange={(newSelection) =>
-                    setSendParams({ ...sendParams, nombreProducto: newSelection})
+                    setSendParams({
+                      ...sendParams,
+                      nombreProducto: newSelection,
+                    })
                   }
                 >
                   <SelectItem key="jamon">Jamón, queso</SelectItem>
@@ -195,7 +206,10 @@ function AddProducts() {
               placeholder="Ingresa la fecha del ingreso del producto al almacen"
               value={sendParams.fechaIngresoAlmacen}
               onChange={(e) =>
-                setSendParams({ ...sendParams, fechaIngresoAlmacen: e.target.value })
+                setSendParams({
+                  ...sendParams,
+                  fechaIngresoAlmacen: e.target.value,
+                })
               }
             />
           </fieldset>
@@ -219,7 +233,10 @@ function AddProducts() {
               placeholder="Ingresa la fecha de expiración del producto"
               value={sendParams.fechaExpiracion}
               onChange={(e) =>
-                setSendParams({ ...sendParams, fechaExpiracion: e.target.value })
+                setSendParams({
+                  ...sendParams,
+                  fechaExpiracion: e.target.value,
+                })
               }
             />
           </fieldset>
@@ -227,7 +244,7 @@ function AddProducts() {
             <Input
               isRequired
               type="number"
-              label="Total"
+              label="Valor compra"
               placeholder="Ingresa el total del pago"
               value={sendParams.valorCompra}
               onChange={(e) =>
@@ -238,6 +255,13 @@ function AddProducts() {
           <Button color="success" type="submit">
             Enviar
           </Button>
+          {showSendData === true ? (
+            <p className="text-center" style={{ color: "green" }}>
+              ¡Datos enviados correctamente!
+            </p>
+          ) : (
+            <></>
+          )}
         </form>
       </div>
     </div>

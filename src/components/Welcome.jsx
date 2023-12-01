@@ -30,8 +30,8 @@ function Welcome() {
       className="content_welcome flex flex-col items-center justify-center"
       style={{ minHeight: "100vh" }}
     >
-      <h1 ref={name1} style={{ fontSize: "2rem" }}></h1>
-      <p ref={name2} className="mt-4"></p>
+      <h1 ref={name1} style={{ fontSize: "2rem", color: "white" }}></h1>
+      <p ref={name2} className="mt-4" style={{color: "blue"}}></p>
       <div>
         <Link to="/dashboard/formulario">
           <Button color="danger" className="p-4" style={{ marginTop: "2rem" }}>

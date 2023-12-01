@@ -2,18 +2,14 @@ import axios from "axios";
 const request = {
   login: async function (data) {
     const formData = new FormData();
-    formData.append("user", data.user);
-    formData.append("password", data.password);
+    formData.append("usuario", data.user);
+    formData.append("contrasena", data.password);
     try {
       const response = await axios.post(
-        "/backend/api.php?action=login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        "http://localhost:3001/products/login",
+        formData
       );
+      console.log(response);
       if (response) {
         return response;
       }
@@ -23,7 +19,6 @@ const request = {
   },
   savedata: async function (data) {
     const formData = new FormData();
-    formData.append("idproducto", data.idProducto);
     formData.append(
       "nombreproducto",
       typeof data.nombreProducto === "string"
@@ -47,10 +42,10 @@ const request = {
         "http://localhost:3001/products/savedata",
         formData
       );
+      console.log(response);
       if (response) {
         return response.data;
       }
-      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +58,40 @@ const request = {
       return response;
     } catch (error) {
       console.error(error);
+    }
+  },
+  updatedata: async function (data) {
+    const formData = new FormData();
+    formData.append("idproducto", data.idproducto);
+    formData.append(
+      "nombreproducto",
+      typeof data.nombreproducto === "string"
+        ? data.nombreproducto
+        : data.nombreproducto.values().next().value.toString()
+    );
+    formData.append(
+      "categoria",
+      typeof data.categoria === "string"
+        ? data.categoria
+        : data.categoria.values().next().value.toString()
+    );
+
+    formData.append("fechacompra", data.fechacompra);
+    formData.append("fechaingresoalmacen", data.fechaingresoalmacen);
+    formData.append("almacen", data.almacen);
+    formData.append("fechaexpiracion", data.fechaexpiracion);
+    formData.append("valorcompra", data.valorcompra);
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/products/updatedata",
+        formData
+      );
+      if (response) {
+        return response.data;
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
     }
   },
 };

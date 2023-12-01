@@ -14,15 +14,20 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Input,
 } from "@nextui-org/react";
+import { FaPenToSquare } from "react-icons/fa6";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import request from "../data/request";
 import { Link } from "react-router-dom";
 function TableData() {
-  const [showModalNotResults, setShowModalNotResults] = useState(false);
+  const [showModalEdit, setShowModalEdit] = useState(false);
+  const [showText, setShowText] = useState(false);
   const [p, setP] = useState([]);
+  const [filteredData, setFilteredData] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
+  const [showSendData, setShowSendData] = useState(false);
   const rowsPerPage = 10;
   const pages = Math.ceil(p?.length / rowsPerPage);
   const d = useMemo(() => {
@@ -30,7 +35,6 @@ function TableData() {
     const end = start + rowsPerPage;
     return p.slice(start, end);
   }, [page, p]);
-  console.log(d);
   useEffect(() => {
     loadData();
   }, []);
@@ -41,7 +45,7 @@ function TableData() {
       if (response.data && response.data.salida === "exito") {
         setP(response.data.data);
       } else {
-        console.log("No se encontraron registros en la tabla");
+        alert("No se encontraron registros en la tabla");
       }
     } catch (error) {
       console.log(error);
@@ -49,20 +53,42 @@ function TableData() {
   }, []);
 
   useEffect(() => {
-    if (p === undefined || p === null) {
-      setShowModalNotResults(true);
-      onOpen();
+    if (p === undefined || p.length === 0) {
+      setShowText(true);
     } else {
-      setShowModalNotResults(false);
+      setShowText(false);
     }
   }, [p]);
 
-  const handleOptionClick = (item) => {
-    // Realizar acciones según la fila en la que se hizo clic
-    console.log(
-      `Hiciste clic en una opción para el elemento con número ${item.numero}`
-    );
+  const handleEditOption = (id) => {
+    if ((id !== 0) & (p.length !== 0)) {
+      const filterData = p.find((item) => item.idproducto === id);
+      if (filterData) {
+        setFilteredData(filterData);
+        setShowModalEdit(true);
+        onOpen();
+      }
+    }
   };
+
+  async function updateData(e) {
+    e.preventDefault();
+    console.log("envió");
+    try {
+      console.log(filteredData);
+      const response = await request.updatedata(filteredData);
+      if (response.salida === "exito") {
+        loadData();
+        setShowSendData(true);
+        setTimeout(() => {
+          setShowSendData(false);
+        }, 3000);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div
@@ -70,9 +96,9 @@ function TableData() {
       style={{ minHeight: "100vh", overflow: "hidden" }}
     >
       <div>
-        {showModalNotResults === false ? (
+        {showText === false ? (
           <div className="p-4">
-            <h1 className="py-3 font-semibold" style={{ fontSize: "30px" }}>
+            <h1 className="py-3 font-semibold" style={{ fontSize: "30px", color: "blue" }}>
               Tabla de facturas
             </h1>
             <Table
@@ -108,13 +134,23 @@ function TableData() {
                   FECHA EXPIRACIÓN
                 </TableColumn>
                 <TableColumn key="valorcompra">VALOR COMPRA</TableColumn>
-                <TableColumn>OPCIONES</TableColumn>
+                <TableColumn key="opciones">OPCIONES</TableColumn>
               </TableHeader>
-              <TableBody emptyContent={"No users found"} items={d}>
+              <TableBody emptyContent={"No hay datos"} items={d}>
                 {(item) => (
                   <TableRow key={item.idproducto}>
                     {(columnKey) => (
-                      <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                      <TableCell>
+                        {columnKey === "opciones" ? (
+                          <Button
+                            onClick={() => handleEditOption(item.idproducto)}
+                          >
+                            <FaPenToSquare />
+                          </Button>
+                        ) : (
+                          getKeyValue(item, columnKey)
+                        )}
+                      </TableCell>
                     )}
                   </TableRow>
                 )}
@@ -146,7 +182,7 @@ function TableData() {
         )}
       </div>
 
-      {showModalNotResults && (
+      {showModalEdit && filteredData && (
         <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
           <ModalContent>
             <>
@@ -154,9 +190,129 @@ function TableData() {
                 Alerta!
               </ModalHeader>
               <ModalBody>
-                <p className="text-black">
-                  No se han guardado datos en la tabla!
-                </p>
+                <form
+                  onSubmit={updateData}
+                  className="flex flex-col p-4"
+                  style={{
+                    gap: "15px",
+                  }}
+                >
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="text"
+                      label="Nombre del producto"
+                      placeholder="Ingresa el nombre del producto"
+                      value={filteredData.nombreproducto}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          nombreproducto: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="text"
+                      label="Categoría del producto"
+                      placeholder="Ingresa la categoría del producto"
+                      value={filteredData.categoria}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          categoria: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="date"
+                      label="Fecha de la compra"
+                      placeholder="Ingresa la fecha de la compra"
+                      value={filteredData.fechacompra}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          fechacompra: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="date"
+                      label="Fecha de ingreso"
+                      placeholder="Ingresa la fecha del ingreso del producto al almacen"
+                      value={filteredData.fechaingresoalmacen}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          fechaingresoalmacen: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="text"
+                      label="Nombre del almacen"
+                      placeholder="Ingresa el nombre del almacen"
+                      value={filteredData.almacen}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          almacen: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="date"
+                      label="Fecha de expiración"
+                      placeholder="Ingresa la fecha de expiración del producto"
+                      value={filteredData.fechaexpiracion}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          fechaexpiracion: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <fieldset>
+                    <Input
+                      isRequired
+                      type="number"
+                      label="Valor compra"
+                      placeholder="Ingresa el total del pago"
+                      value={filteredData.valorcompra}
+                      onChange={(e) =>
+                        setFilteredData({
+                          ...filteredData,
+                          valorcompra: e.target.value,
+                        })
+                      }
+                    />
+                  </fieldset>
+                  <Button color="success" type="submit">
+                    Enviar
+                  </Button>
+                  {showSendData === true ? (
+                    <p className="text-center" style={{ color: "green" }}>
+                      ¡Datos enviados correctamente!
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </form>
               </ModalBody>
               <ModalFooter>
                 <Button color="success" variant="light" onPress={onClose}>

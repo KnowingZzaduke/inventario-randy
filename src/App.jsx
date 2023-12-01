@@ -13,8 +13,6 @@ function App() {
   const navigate = useNavigate();
   async function handleSubmit(e) {
     e.preventDefault();
-    navigate("/dashboard");
-
     for (let key in paramsLogin) {
       if (paramsLogin[key] === "") {
         setShowTextErrorLogin(true);
@@ -22,11 +20,9 @@ function App() {
           setShowTextErrorLogin(false);
         }, 3000);
       } else {
+        console.log(paramsLogin)
         const response = await request.login(paramsLogin);
-        if (response) {
-          console.log(response);
-          navigate("/dashboard");
-        }
+       
       }
     }
   }

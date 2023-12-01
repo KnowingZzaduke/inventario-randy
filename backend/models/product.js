@@ -1,8 +1,8 @@
 // En el archivo models/product.js
-const { DataTypes } = require('sequelize');
-const sequelize = require('../sequelize');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../sequelize");
 
-const Product = sequelize.define('Product', {
+const Product = sequelize.define("Product", {
   idproducto: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -38,4 +38,20 @@ const Product = sequelize.define('Product', {
   },
 });
 
-module.exports = Product;
+const User = sequelize.define("User", {
+  idusuario: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  usuario: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  contraseña: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+module.exports = {Product, User};
