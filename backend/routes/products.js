@@ -7,10 +7,9 @@ const upload = multer();
 
 router.post("/login", async (req, res) => {
   try {
-    const { usuario, contrasena } = req.body;
-
-    // Buscar al usuario por nombre de usuario
-    const foundUser = await User.findOne({ where: { usuario: usuario } });
+    const data = req.body;
+    console.log("Esto es data:", data);
+    const foundUser = await User.findOne({ where: { usuario: data.usuario } });
 
     if (!foundUser) {
       return res
@@ -19,23 +18,18 @@ router.post("/login", async (req, res) => {
     }
 
     // Comparar la contraseña proporcionada con la almacenada en la base de datos
-    const passwordMatch = await bcrypt.compare(
-      contrasena,
-      foundUser.contrasena
-    );
-
-    if (!passwordMatch) {
+    if (data.contrasena === foundUser.contrasena) {
+      // Enviar todos los datos del usuario en la respuesta
+      return res.json({
+        salida: "exito",
+        mensaje: "Inicio de sesión exitoso",
+        data: foundUser.toJSON(),
+      });
+    } else {
       return res
         .status(401)
         .json({ salida: "Error", mensaje: "Contraseña incorrecta" });
     }
-
-    // Enviar todos los datos del usuario en la respuesta
-    res.json({
-      salida: "exito",
-      mensaje: "Inicio de sesión exitoso",
-      usuario: foundUser.toJSON(), // Esto convierte el modelo Sequelize a un objeto JSON
-    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ salida: "Error", mensaje: "Error en el servidor" });

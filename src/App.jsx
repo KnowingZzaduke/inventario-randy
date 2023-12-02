@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../compile-css/output.css";
 import { Input, Button, Image } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
 import { useNavigate } from "react-router-dom";
 import request from "./data/request";
+import { DataContext } from "./context/DataContext";
+import Cookies from "js-cookie";
+
 function App() {
   const [paramsLogin, setParamsLogin] = useState({
-    user: "",
-    password: "",
+    usuario: "",
+    contrasena: "",
   });
+  const { dataUser, setDataUser } = useContext(DataContext);
   const [showTextErrorLogin, setShowTextErrorLogin] = useState(false);
   const navigate = useNavigate();
   async function handleSubmit(e) {
@@ -20,12 +24,25 @@ function App() {
           setShowTextErrorLogin(false);
         }, 3000);
       } else {
-        console.log(paramsLogin)
         const response = await request.login(paramsLogin);
-       
+        if (response.data.salida === "exito") {
+          setDataUser(response.data);
+          let cookkieD = request.encryptData(response.data);
+          Cookies.set("dyzam-app", cookkieD, {
+            SameSite: "none",
+            secure: true,
+          });
+        }
       }
     }
   }
+
+  useEffect(() => {
+    console.log(dataUser);
+    if (dataUser.length !== 0) {
+      navigate("/dashboard");
+    }
+  }, [dataUser]);
   return (
     <div
       className="flex flex-col align-middle justify-center bg_signin"
@@ -58,7 +75,7 @@ function App() {
               required
               value={setParamsLogin.user}
               onChange={(e) =>
-                setParamsLogin({ ...paramsLogin, user: e.target.value })
+                setParamsLogin({ ...paramsLogin, usuario: e.target.value })
               }
             />
           </div>
@@ -70,7 +87,7 @@ function App() {
               required
               value={setParamsLogin.password}
               onChange={(e) =>
-                setParamsLogin({ ...paramsLogin, password: e.target.value })
+                setParamsLogin({ ...paramsLogin, contrasena: e.target.value })
               }
             />
           </div>

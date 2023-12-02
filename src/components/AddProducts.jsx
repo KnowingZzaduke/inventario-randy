@@ -10,13 +10,18 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
+import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import request from "../data/request";
-import { useEffect, useState } from "react";
+import { useEffect, useContext, useState } from "react";
+import { DataContext } from "../context/DataContext";
 function AddProducts() {
   const nuevoUuid = uuidv4();
+  const { dataUser } = useContext(DataContext);
+  const [dataDecript, setDataDecript] = useState([]);
   const [sendParams, setSendParams] = useState({
     idProducto: nuevoUuid,
+    idUsuario: null,
     nombreProducto: "",
     categoria: "",
     fechaCompra: "",
@@ -30,7 +35,14 @@ function AddProducts() {
   const [categorieValues, setCategorieValues] = useState([]);
   const [showProductsSelect, setShowProductosSelect] = useState(false);
   const [showCategoriesSelect, setShowCategoriesSelect] = useState(false);
-
+  useEffect(() => {
+    const SESSION = Cookies.get("dyzam-app");
+    const SESSIONDECRYPT = request.decryptdata(SESSION);
+    if (SESSIONDECRYPT.salida === "exito") {
+      setSendParams({ ...sendParams, idUsuario: SESSIONDECRYPT.idusuario });
+    }
+  }, []);
+  
   useEffect(() => {
     if (productsValues.find((e) => e === "productos")) {
       setShowProductosSelect(true);
@@ -56,6 +68,7 @@ function AddProducts() {
       }
     }
     try {
+      console.log(sendParams);
       const response = await request.savedata(sendParams);
       if (response.salida === "exito") {
         setShowSendData(true);

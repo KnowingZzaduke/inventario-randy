@@ -1,13 +1,15 @@
 import axios from "axios";
+import CryptoJS from 'crypto-js';
+
 const request = {
   login: async function (data) {
     const formData = new FormData();
-    formData.append("usuario", data.user);
-    formData.append("contrasena", data.password);
+    formData.append("usuario", data.usuario);
+    formData.append("contrasena", data.contrasena);
     try {
       const response = await axios.post(
         "http://localhost:3001/products/login",
-        formData
+        data
       );
       console.log(response);
       if (response) {
@@ -19,6 +21,7 @@ const request = {
   },
   savedata: async function (data) {
     const formData = new FormData();
+    formData.append("idusuario", data.idUsuario);
     formData.append(
       "nombreproducto",
       typeof data.nombreProducto === "string"
@@ -93,6 +96,18 @@ const request = {
     } catch (error) {
       console.log(error);
     }
+  },
+  decryptdata: function (data) {
+    const bytes = CryptoJS.AES.decrypt(data, "FDhfd678GHSDFS23");
+    const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    return decrypted;
+  },
+  encryptData: function (data) {
+    const encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify(data),
+      "FDhfd678GHSDFS23"
+    );
+    return encrypted;
   },
 };
 

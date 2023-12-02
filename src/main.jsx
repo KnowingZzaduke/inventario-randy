@@ -7,7 +7,8 @@ import AddProducts from "./components/AddProducts.jsx";
 import TableData from "./components/Table.jsx";
 import { NextUIProvider } from "@nextui-org/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
+import { HOC } from "./validation/Hoc.jsx";
+import DataContextProvider from "./context/DataContext.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -15,7 +16,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: (
+      <HOC>
+        <Dashboard />
+      </HOC>
+    ),
     children: [
       {
         path: "/dashboard/welcome",
@@ -27,16 +32,18 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard/table",
-        element: <TableData/>
-      }
+        element: <TableData />,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <NextUIProvider>
-      <RouterProvider router={router} />
-    </NextUIProvider>
+    <DataContextProvider>
+      <NextUIProvider>
+        <RouterProvider router={router} />
+      </NextUIProvider>
+    </DataContextProvider>
   </React.StrictMode>
 );
