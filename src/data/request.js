@@ -1,5 +1,5 @@
 import axios from "axios";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 const request = {
   login: async function (data) {
@@ -53,10 +53,10 @@ const request = {
       console.log(error);
     }
   },
-  loaddata: async function () {
+  loaddata: async function (idusuario) {
     try {
       const response = await axios.get(
-        "http://localhost:3001/products/loaddata"
+        `http://localhost:3001/products/loaddata/${idusuario}`
       );
       return response;
     } catch (error) {

@@ -20,6 +20,7 @@ import { FaPenToSquare } from "react-icons/fa6";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import request from "../data/request";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 function TableData() {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [showText, setShowText] = useState(false);
@@ -41,11 +42,15 @@ function TableData() {
 
   const loadData = useCallback(async () => {
     try {
-      const response = await request.loaddata();
-      if (response.data && response.data.salida === "exito") {
-        setP(response.data.data);
-      } else {
-        alert("No se encontraron registros en la tabla");
+      const SESSION = Cookies.get("dyzam-app");
+      const SESSIONDECRYPT = await request.decryptdata(SESSION);
+      if (SESSIONDECRYPT.salida === "exito") {
+        const response = await request.loaddata(SESSIONDECRYPT.data.idusuario);
+        if (response.data && response.data.salida === "exito") {
+          setP(response.data.data);
+        } else {
+          alert("No se encontraron registros en la tabla");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -98,7 +103,10 @@ function TableData() {
       <div>
         {showText === false ? (
           <div className="p-4">
-            <h1 className="py-3 font-semibold" style={{ fontSize: "30px", color: "blue" }}>
+            <h1
+              className="py-3 font-semibold"
+              style={{ fontSize: "30px", color: "blue" }}
+            >
               Tabla de facturas
             </h1>
             <Table

@@ -36,13 +36,17 @@ function AddProducts() {
   const [showProductsSelect, setShowProductosSelect] = useState(false);
   const [showCategoriesSelect, setShowCategoriesSelect] = useState(false);
   useEffect(() => {
-    const SESSION = Cookies.get("dyzam-app");
-    const SESSIONDECRYPT = request.decryptdata(SESSION);
-    if (SESSIONDECRYPT.salida === "exito") {
-      setSendParams({ ...sendParams, idUsuario: SESSIONDECRYPT.idusuario });
-    }
+    const fetchData = async () => {
+      const SESSION = Cookies.get("dyzam-app");
+      const SESSIONDECRYPT = await request.decryptdata(SESSION);
+      if (SESSIONDECRYPT.salida === "exito") {
+        setSendParams({ ...sendParams, idUsuario: SESSIONDECRYPT.data.idusuario });
+      }
+    };
+
+    fetchData();
   }, []);
-  
+
   useEffect(() => {
     if (productsValues.find((e) => e === "productos")) {
       setShowProductosSelect(true);

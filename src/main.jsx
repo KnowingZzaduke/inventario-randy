@@ -12,7 +12,11 @@ import DataContextProvider from "./context/DataContext.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <HOC>
+        <App />
+      </HOC>
+    ),
   },
   {
     path: "/dashboard",

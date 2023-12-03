@@ -3,15 +3,13 @@ import "../compile-css/output.css";
 import { Input, Button, Image } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
 import request from "./data/request";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { DataContext } from "./context/DataContext";
 
-function App() {
+function Signup() {
   const [paramsLogin, setParamsLogin] = useState({
     usuario: "",
     contrasena: "",
   });
-  const navigate = useNavigate();
   const [showTextErrorLogin, setShowTextErrorLogin] = useState(false);
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,23 +20,16 @@ function App() {
           setShowTextErrorLogin(false);
         }, 3000);
       }
-    }
-    try {
-      const response = await request.login(paramsLogin);
-      if (response.data.salida === "exito") {
-        let cookkieD = request.encryptData(response.data);
-        Cookies.set("dyzam-app", cookkieD, {
-          SameSite: "none",
-          secure: true,
-        });
-        if (cookkieD) {
-          navigate("/dashboard");
+      try {
+        const response = await request.login(paramsLogin);
+        if (response.data.salida === "exito") {
         }
+      } catch (error) {
+        alert(error);
       }
-    } catch (error) {
-      alert(error);
     }
   }
+
   return (
     <div
       className="flex flex-col align-middle justify-center bg_signin"
@@ -109,4 +100,4 @@ function App() {
   );
 }
 
-export default App;
+export default Signup;

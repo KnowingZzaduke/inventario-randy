@@ -10,7 +10,7 @@ export function HOC({ children }) {
   const navigate = useNavigate();
   useEffect(() => {
     const SESSION = Cookies.get("dyzam-app");
-    if (SESSION == undefined) {
+    if (SESSION === undefined) {
       navigate("/");
     } else {
       const SESSIONDECRYPT = request.decryptdata(SESSION);

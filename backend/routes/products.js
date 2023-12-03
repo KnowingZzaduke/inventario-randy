@@ -39,6 +39,7 @@ router.post("/login", async (req, res) => {
 router.post("/savedata", upload.none(), async (req, res) => {
   try {
     const {
+      idusuario,
       nombreproducto,
       categoria,
       fechacompra,
@@ -48,6 +49,7 @@ router.post("/savedata", upload.none(), async (req, res) => {
       valorcompra,
     } = req.body;
     const result = await Product.create({
+      idusuario: idusuario,
       nombreproducto: nombreproducto,
       categoria: categoria,
       fechacompra: fechacompra,
@@ -70,9 +72,15 @@ router.post("/savedata", upload.none(), async (req, res) => {
 });
 
 // Ruta para cargar datos
-router.get("/loaddata", async (req, res) => {
+router.get("/loaddata/:idusuario", async (req, res) => {
   try {
-    const data = await Product.findAll({ raw: true });
+    const idusuario = req.params.idusuario;
+
+    const data = await Product.findAll({
+      where: { idusuario: idusuario },
+      raw: true,
+    });
+
     res.json({ salida: "exito", data: data });
   } catch (error) {
     console.error(error);

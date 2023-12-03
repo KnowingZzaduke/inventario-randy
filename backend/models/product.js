@@ -36,6 +36,10 @@ const Product = sequelize.define("Product", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  idusuario: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 const User = sequelize.define("User", {
@@ -54,4 +58,4 @@ const User = sequelize.define("User", {
   },
 });
 
-module.exports = {Product, User};
+module.exports = { Product, User };
