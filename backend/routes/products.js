@@ -13,7 +13,7 @@ router.post("/login", async (req, res) => {
     if (!foundUser) {
       return res
         .status(401)
-        .json({ salida: "Error", mensaje: "Usuario no encontrado" });
+        .json({ salida: "error", mensaje: "Usuario no encontrado" });
     }
 
     // Comparar la contraseña proporcionada con la almacenada en la base de datos
@@ -27,11 +27,11 @@ router.post("/login", async (req, res) => {
     } else {
       return res
         .status(401)
-        .json({ salida: "Error", mensaje: "Contraseña incorrecta" });
+        .json({ salida: "Error", data: "Contraseña incorrecta" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ salida: "Error", mensaje: "Error en el servidor" });
+    res.status(500).json({ salida: "Error", data: "Error en el servidor" });
   }
 });
 

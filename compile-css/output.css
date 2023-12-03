@@ -30,7 +30,7 @@
 }
 #root {
   min-height: 100vh;
-  background-image: url("/fondo-inventario.jpeg");
+  background-image: url("/fondo-i.jpeg");
   background-repeat: no-repeat;
   background-size: cover;
 }

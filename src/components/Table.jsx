@@ -16,7 +16,7 @@ import {
   ModalFooter,
   Input,
 } from "@nextui-org/react";
-import { FaPenToSquare } from "react-icons/fa6";
+import { FaPenToSquare, FaTriangleExclamation, FaCheck } from "react-icons/fa6";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import request from "../data/request";
 import { Link } from "react-router-dom";
@@ -47,7 +47,29 @@ function TableData() {
       if (SESSIONDECRYPT.salida === "exito") {
         const response = await request.loaddata(SESSIONDECRYPT.data.idusuario);
         if (response.data && response.data.salida === "exito") {
-          setP(response.data.data);
+          let today = new Date();
+          // Recorrer los productos en los datos
+          const productosConFechaCercana = response.data.data.map(
+            (producto) => {
+              // Convertir la cadena de fechaexpiracion a un objeto Date
+              const fechaExpiracion = new Date(producto.fechaexpiracion);
+
+              // Calcular la diferencia en milisegundos
+              const diferencia = fechaExpiracion - today;
+
+              // Convertir la diferencia a días
+              const diasDiferencia = Math.floor(
+                diferencia / (1000 * 60 * 60 * 24)
+              );
+
+              // Asignar un estado al producto
+              producto.estado =
+                diasDiferencia <= 7 ? "porVencer" : "noPorVencer";
+
+              return producto;
+            }
+          );
+          setP(productosConFechaCercana);
         } else {
           alert("No se encontraron registros en la tabla");
         }
@@ -78,9 +100,7 @@ function TableData() {
 
   async function updateData(e) {
     e.preventDefault();
-    console.log("envió");
     try {
-      console.log(filteredData);
       const response = await request.updatedata(filteredData);
       if (response.salida === "exito") {
         loadData();
@@ -143,6 +163,7 @@ function TableData() {
                 </TableColumn>
                 <TableColumn key="valorcompra">VALOR COMPRA</TableColumn>
                 <TableColumn key="opciones">OPCIONES</TableColumn>
+                <TableColumn key="informacion">INFORMACIÓN</TableColumn>
               </TableHeader>
               <TableBody emptyContent={"No hay datos"} items={d}>
                 {(item) => (
@@ -154,6 +175,19 @@ function TableData() {
                             onClick={() => handleEditOption(item.idproducto)}
                           >
                             <FaPenToSquare />
+                          </Button>
+                        ) : columnKey === "informacion" &&
+                          item.estado === "porVencer" ? (
+                          <Button color="warning" title="Producto por vencer">
+                            <FaTriangleExclamation />
+                          </Button>
+                        ) : columnKey === "informacion" &&
+                          item.estado === "noPorVencer" ? (
+                          <Button
+                            color="success"
+                            title="Producto no pronto a vencer"
+                          >
+                            <FaCheck />
                           </Button>
                         ) : (
                           getKeyValue(item, columnKey)
@@ -171,7 +205,7 @@ function TableData() {
             style={{ minHeight: "100vh" }}
           >
             <h1 style={{ fontSize: "2rem", color: "white" }}>¡Mensaje!</h1>
-            <p className="mt-4 text-center" style={{color: "white"}}>
+            <p className="mt-4 text-center" style={{ color: "white" }}>
               Debes agregar productos <br /> para poder visualizar registros en
               la tabla
             </p>

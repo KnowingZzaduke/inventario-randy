@@ -13,6 +13,7 @@ function App() {
   });
   const navigate = useNavigate();
   const [showTextErrorLogin, setShowTextErrorLogin] = useState(false);
+
   async function handleSubmit(e) {
     e.preventDefault();
     for (let key in paramsLogin) {
@@ -36,6 +37,7 @@ function App() {
         }
       }
     } catch (error) {
+      alert("Usuario no encontrado");
       console.log(error);
     }
   }

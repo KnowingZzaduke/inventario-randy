@@ -31,12 +31,10 @@ function Welcome() {
       style={{ minHeight: "100vh" }}
     >
       <h1 ref={name1} style={{ fontSize: "2rem", color: "white" }}></h1>
-      <p ref={name2} className="mt-4" style={{color: "blue"}}></p>
+      <p ref={name2} className="mt-4" style={{ color: "blue" }}></p>
       <div>
-        <Link to="/dashboard/formulario">
-          <Button color="danger" className="p-4" style={{ marginTop: "2rem" }}>
-            <p>Registrar facturas</p>
-          </Button>
+        <Link to="/dashboard/form-add-products">
+          <p style={{ backgroundColor: "red", padding: "8px", borderRadius: "10px", color: "white", marginTop: "10px" }}>Registrar facturas</p>
         </Link>
       </div>
     </div>
