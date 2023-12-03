@@ -8,7 +8,6 @@ const upload = multer();
 router.post("/login", async (req, res) => {
   try {
     const data = req.body;
-    console.log("Esto es data:", data);
     const foundUser = await User.findOne({ where: { usuario: data.usuario } });
 
     if (!foundUser) {
@@ -33,6 +32,25 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ salida: "Error", mensaje: "Error en el servidor" });
+  }
+});
+
+router.post("/signup", upload.none(), async (req, res) => {
+  try {
+    const { usuario, contrasena } = req.body;
+
+    // Crea el nuevo usuario en la base de datos
+    const newUser = await User.create({
+      usuario,
+      contrasena,
+    });
+
+    res.json({ salida: "exito", mensaje: "Usuario registrado con éxito" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ salida: "Error!", mensaje: "Error al registrar usuario" });
   }
 });
 // Ruta para guardar datos

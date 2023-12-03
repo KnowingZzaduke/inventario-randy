@@ -5,6 +5,7 @@ import Dashboard from "./routes/Dashboard.jsx";
 import Welcome from "./components/Welcome.jsx";
 import AddProducts from "./components/AddProducts.jsx";
 import TableData from "./components/Table.jsx";
+import Signup from "./routes/Signup.jsx";
 import { NextUIProvider } from "@nextui-org/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HOC } from "./validation/Hoc.jsx";
@@ -15,6 +16,14 @@ const router = createBrowserRouter([
     element: (
       <HOC>
         <App />
+      </HOC>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <HOC>
+        <Signup />
       </HOC>
     ),
   },

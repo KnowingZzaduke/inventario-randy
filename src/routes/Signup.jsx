@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import "../compile-css/output.css";
+import "../../compile-css/output.css";
 import { Input, Button, Image } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
-import request from "./data/request";
-import { DataContext } from "./context/DataContext";
+import request from "../data/request";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [paramsLogin, setParamsLogin] = useState({
     usuario: "",
     contrasena: "",
   });
+  const [showSuccessUser, setShowSuccesUser] = useState(false);
+  const navigate = useNavigate();
   const [showTextErrorLogin, setShowTextErrorLogin] = useState(false);
   async function handleSubmit(e) {
     e.preventDefault();
@@ -20,13 +23,18 @@ function Signup() {
           setShowTextErrorLogin(false);
         }, 3000);
       }
-      try {
-        const response = await request.login(paramsLogin);
-        if (response.data.salida === "exito") {
-        }
-      } catch (error) {
-        alert(error);
+    }
+    try {
+      const response = await request.signup(paramsLogin);
+      if (response.data.salida === "exito") {
+        setShowSuccesUser(true);
+        setTimeout(() => {
+          setShowSuccesUser(false);
+          navigate("/");
+        }, 3000);
       }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -80,7 +88,7 @@ function Signup() {
           </div>
           <div className="py-2">
             <Button className="w-full" type="submit" color="success">
-              Enviar
+              Crear usuario
             </Button>
           </div>
           {showTextErrorLogin === true ? (
@@ -93,7 +101,18 @@ function Signup() {
           ) : (
             <></>
           )}
-          <div></div>
+          {showSuccessUser === true ? (
+            <p className="text-center" style={{ color: "green" }}>
+              ¡Usuario creado correctamente!
+            </p>
+          ) : (
+            <></>
+          )}
+          <div>
+            <Link className="underline bg-opacity-hover" to="/">
+              Iniciar sesión
+            </Link>
+          </div>
         </form>
       </div>
     </div>

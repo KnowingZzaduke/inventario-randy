@@ -11,7 +11,23 @@ const request = {
         "http://localhost:3001/products/login",
         data
       );
-      console.log(response);
+      if (response) {
+        return response;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  signup: async function (data) {
+    const formData = new FormData();
+    formData.append("usuario", data.usuario);
+    formData.append("contrasena", data.contrasena);
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/products/signup",
+        data
+      );
+      console.log(response)
       if (response) {
         return response;
       }

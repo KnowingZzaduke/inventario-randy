@@ -4,7 +4,7 @@ import { Input, Button, Image } from "@nextui-org/react";
 import logoInventario from "/logo-inventario.jpeg";
 import request from "./data/request";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function App() {
   const [paramsLogin, setParamsLogin] = useState({
@@ -36,7 +36,7 @@ function App() {
         }
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   }
   return (
@@ -89,7 +89,7 @@ function App() {
           </div>
           <div className="py-2">
             <Button className="w-full" type="submit" color="success">
-              Enviar
+              Iniciar sesión
             </Button>
           </div>
           {showTextErrorLogin === true ? (
@@ -102,7 +102,11 @@ function App() {
           ) : (
             <></>
           )}
-          <div></div>
+          <div>
+            <Link className="underline bg-opacity-hover" to="/signup">
+              Crear usuario
+            </Link>
+          </div>
         </form>
       </div>
     </div>

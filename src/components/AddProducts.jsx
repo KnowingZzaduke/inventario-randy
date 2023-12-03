@@ -40,7 +40,10 @@ function AddProducts() {
       const SESSION = Cookies.get("dyzam-app");
       const SESSIONDECRYPT = await request.decryptdata(SESSION);
       if (SESSIONDECRYPT.salida === "exito") {
-        setSendParams({ ...sendParams, idUsuario: SESSIONDECRYPT.data.idusuario });
+        setSendParams({
+          ...sendParams,
+          idUsuario: SESSIONDECRYPT.data.idusuario,
+        });
       }
     };
 
@@ -78,7 +81,7 @@ function AddProducts() {
         setShowSendData(true);
         setTimeout(() => {
           setShowSendData(false);
-        }, 3000);
+        }, 5000);
       }
     } catch (error) {
       alert(error);
@@ -145,19 +148,6 @@ function AddProducts() {
                 </Select>
               </fieldset>
             )}
-            <div>
-              <CheckboxGroup
-                className="py-4"
-                value={productsValues}
-                onChange={setProductsValues}
-              >
-                <p style={{ fontSize: "12px", color: "red" }}>
-                  Marca esta opción solo si el producto ya se encuentra
-                  registrado
-                </p>
-                <Checkbox value="productos">Escoger productos</Checkbox>
-              </CheckboxGroup>
-            </div>
           </div>
           <div>
             {showCategoriesSelect === false ? (
@@ -190,18 +180,6 @@ function AddProducts() {
                 </Select>
               </fieldset>
             )}
-            <div>
-              <CheckboxGroup
-                className="py-4"
-                value={categorieValues}
-                onChange={setCategorieValues}
-              >
-                <p style={{ fontSize: "12px", color: "red" }}>
-                  Marca esta opción solo si la categoria se encuentra registrada
-                </p>
-                <Checkbox value="categorias">Escoger categoria</Checkbox>
-              </CheckboxGroup>
-            </div>
           </div>
           <fieldset>
             <Input

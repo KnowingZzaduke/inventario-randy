@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FaHandsClapping, FaNewspaper, FaTableList } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
 function NavbarDashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -33,6 +35,11 @@ function NavbarDashboard() {
     },
   ];
 
+  function closedSession() {
+    Cookies.remove("dyzam-app");
+    navigate("/");
+  }
+
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
@@ -51,7 +58,7 @@ function NavbarDashboard() {
             color="primary"
             href="#"
             variant="flat"
-            onClick={() => navigate("/")}
+            onClick={() => closedSession()}
           >
             Cerrar sesión
           </Button>

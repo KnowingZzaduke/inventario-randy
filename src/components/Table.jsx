@@ -170,8 +170,8 @@ function TableData() {
             className="content_welcome flex flex-col items-center justify-center"
             style={{ minHeight: "100vh" }}
           >
-            <h1 style={{ fontSize: "2rem" }}>¡Mensaje!</h1>
-            <p className="mt-4 text-center">
+            <h1 style={{ fontSize: "2rem", color: "white" }}>¡Mensaje!</h1>
+            <p className="mt-4 text-center" style={{color: "white"}}>
               Debes agregar productos <br /> para poder visualizar registros en
               la tabla
             </p>
